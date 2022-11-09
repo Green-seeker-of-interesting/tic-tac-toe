@@ -128,3 +128,4 @@ dmypy.json
 .pyre/
 *.drawio.bkp
 *.dtmp
+*.csv

@@ -1,13 +1,13 @@
 from game.bordar import GameBordar
 from game.player import RandomPlayer
-from game.game import Game
+from game.game import Game, QueuePlayers
 
 def main():
-    game = Game(RandomPlayer(name='pl-1'), RandomPlayer(name='pl-2'))
-    gen = game._give_player()
-    for _ in range(10):
-        print(next(gen).name)
+    game = Game(RandomPlayer(name="pl-1"), RandomPlayer(name="pl-2"))
 
+    while game.is_continues:
+        game.segmentGame()
+    game.bordar.art()
 
 
 
