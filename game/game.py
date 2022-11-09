@@ -14,13 +14,15 @@ class Game:
         self.bordar.make_move(player.next_move(self.bordar))
         
         if self.is_end_game():
-            player.end_game(is_vin=True)
+            player.end_game(is_vin=True) 
             next(self.queue).end_game(is_vin=False)
             self.is_continues = False
+        
         elif self.bordar.tik == 9:
             player.end_game(is_vin=False)
             next(self.queue).end_game(is_vin=True)
             self.is_continues = False
+
         return self.is_continues
         
 

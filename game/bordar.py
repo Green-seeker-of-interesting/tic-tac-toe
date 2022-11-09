@@ -8,10 +8,11 @@ class GameBordar:
         self.bordar = np.zeros(9, dtype=int)
 
     def make_move(self, move_index:int):
-        if self.tik % 2 == 0:
-            self.bordar[move_index] = 1
-        else:
-            self.bordar[move_index] = -1
+        if self.bordar[move_index] == 0:
+            if self.tik % 2 == 0:
+                self.bordar[move_index] = 1
+            else:
+                self.bordar[move_index] = -1
         self.tik += 1
 
     def art(self) -> None:

@@ -3,6 +3,7 @@ from random import choice
 import typing as tp
 
 import numpy as np
+from keras.models import model_from_json
 
 from .bordar import GameBordar
 
@@ -12,6 +13,7 @@ class Player(ABC):
     def __init__(self, name: str):
         self.name = name
         self.bordar_startes = []
+        self.wins = 0
 
     def remember_state(self, bordar: GameBordar, next_move: int):
         self.bordar_startes.append([bordar.give_bordar_vector().copy(), next_move])
@@ -51,4 +53,32 @@ class RandomPlayer(Player):
 
     def end_game(self, is_vin: bool) -> None:
         if is_vin:
+            self.wins += 1
             self.save()
+        self.bordar_startes = []
+
+
+class AIPlayer(Player):
+
+    def __init__(self, name: str):
+        super().__init__(name)
+        self.model = self.init_model()
+
+    def init_model(self):
+        with open('game/unit/' + self.name + '/model.json', 'r') as f:
+            loaded_model = model_from_json(f.read())
+        loaded_model.load_weights('game/unit/' + self.name + '/weights.h5')
+        return loaded_model
+
+    def next_move(self, bordar: GameBordar) -> int:
+        vektor = np.array([bordar.give_bordar_vector()])
+        move = self.model.predict(vektor)
+        next_move = np.argmax(move)
+        self.remember_state(bordar, next_move)
+        return next_move
+
+    def end_game(self, is_vin: bool):
+        if is_vin:
+            self.wins += 1
+            # self.save()
+        self.bordar_startes = []
