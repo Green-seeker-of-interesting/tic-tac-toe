@@ -12,18 +12,19 @@ class Player(ABC):
 
     def __init__(self, name: str):
         self.name = name
-        self.bordar_startes = []
+        self.bordar_states = []
         self.wins = 0
 
     def remember_state(self, bordar: GameBordar, next_move: int):
-        self.bordar_startes.append([bordar.give_bordar_vector().copy(), next_move])
+        self.bordar_states.append([bordar.give_bordar_vector().copy(), next_move])
 
     def save(self):
         with open("games.csv", "a") as f:
-            for state in self.bordar_startes: 
-                for item in state[0]:
-                    f.write(str(item) + ",")
-                f.write(str(state[1]) + "\n")
+            for state in self.bordar_states:
+                if state[0][state[1]] == 0:  
+                    for item in state[0]:
+                        f.write(str(item) + ",")
+                    f.write(str(state[1]) + "\n")
             
 
     @abstractmethod
@@ -54,7 +55,7 @@ class RandomPlayer(Player):
     def end_game(self, is_vin: bool) -> None:
         if is_vin:
             self.wins += 1
-            self.save()
+            # self.save()
         self.bordar_startes = []
 
 
@@ -72,7 +73,7 @@ class AIPlayer(Player):
 
     def next_move(self, bordar: GameBordar) -> int:
         vektor = np.array([bordar.give_bordar_vector()])
-        move = self.model.predict(vektor)
+        move = self.model.predict(vektor,verbose=0)
         next_move = np.argmax(move)
         self.remember_state(bordar, next_move)
         return next_move
